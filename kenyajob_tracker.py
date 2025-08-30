@@ -57,28 +57,59 @@ class KenyaJobTracker:
             # Skipping region and category selection due to dynamic/custom dropdowns
             
             # Submit search by clicking the search button (try multiple selectors)
+            # Based on debug output, we need to find the actual search button
+            # Let's try more specific selectors and also look for input elements
             search_button_selectors = [
-                "button[aria-label='Search']",
                 "button[type='submit']",
-                "button.search-button",
-                "button.btn-search",
-                "button[title='Search']",
-                "input[type='submit'][value*='Search']",
-                "input[value*='Search']"
+                "input[type='submit']",
+                "button.btn-primary",
+                "button.btn",
+                "input.btn",
+                "input[value*='Search']",
+                "input[value*='Find']",
+                "input[value*='Go']",
+                "button[class*='search']",
+                "input[class*='search']"
             ]
             
             search_button = None
             found_selector = None
+            selector_type = "CSS"
+            
+            # First try CSS selectors
             for selector in search_button_selectors:
                 try:
                     search_button = self.driver.find_element(By.CSS_SELECTOR, selector)
                     if search_button:
                         found_selector = selector
-                        print(f"Found search button using selector: {selector}")
+                        print(f"Found search button using CSS selector: {selector}")
                         break
                 except Exception as e:
-                    print(f"Selector '{selector}' failed: {e}")
+                    print(f"CSS selector '{selector}' failed: {e}")
                     continue
+            
+            # If CSS selectors fail, try XPath selectors for text content
+            if not search_button:
+                xpath_selectors = [
+                    "//button[contains(text(), 'Search')]",
+                    "//button[contains(text(), 'Find')]",
+                    "//input[@type='submit' and contains(@value, 'Search')]",
+                    "//input[@type='submit' and contains(@value, 'Find')]",
+                    "//input[@type='button' and contains(@value, 'Search')]",
+                    "//input[@type='button' and contains(@value, 'Find')]"
+                ]
+                
+                for selector in xpath_selectors:
+                    try:
+                        search_button = self.driver.find_element(By.XPATH, selector)
+                        if search_button:
+                            found_selector = selector
+                            selector_type = "XPath"
+                            print(f"Found search button using XPath selector: {selector}")
+                            break
+                    except Exception as e:
+                        print(f"XPath selector '{selector}' failed: {e}")
+                        continue
             
             if not search_button:
                 # Debug: print all buttons on the page to help identify the correct selector
