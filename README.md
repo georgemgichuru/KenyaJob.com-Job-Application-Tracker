@@ -37,10 +37,3 @@ You can customize the search criteria in config.py:
 - Adjust the category based on your industry
 - Set how many listings to extract and how recent they should be
 
-## Resume Talking Points
-
-- Developed a specialized web automation tool for KenyaJob.com
-- Implemented robust selectors to handle the website's dynamic content
-- Created date parsing logic to handle relative dates ("X days ago")
-- Built a filtering system to focus on recent job postings
-- Designed a comprehensive tracking system for job applications"# KenyaJob.com-Job-Application-Tracker" 
